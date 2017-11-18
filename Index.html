@@ -1,0 +1,37 @@
+<!doctype html>
+
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <title>FireStore</title>
+
+
+</head>
+
+<body>
+
+
+    <script src="https://www.gstatic.com/firebasejs/4.6.0/firebase.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/4.6.0/firebase-firestore.js"></script>
+    <script>
+        firebase.initializeApp({
+            apiKey: 'AIzaSyDUjuQAYp4uerVNtfZprXq8fT9wJesr_KE',
+            authDomain: '',
+            projectId: 'testfs-25d22'
+        });
+
+        // Initialize Cloud Firestore through Firebase
+        var db = firebase.firestore();
+        
+        db.collection("cities").orderBy("name").limit(2).get().then(function(querySnapshot) {
+            querySnapshot.forEach(function(doc) {
+                console.log(doc.id, " => ", doc.data());
+            });
+        });
+
+
+    </script>
+</body>
+
+</html>
