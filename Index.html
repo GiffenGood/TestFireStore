@@ -5,16 +5,22 @@
 <head>
     <meta charset="utf-8">
     <title>FireStore</title>
-
-
+    <script src="https://www.gstatic.com/firebasejs/4.6.2/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/4.6.2/firebase-auth.js"></script>
+    <!-- <script src="https://www.gstatic.com/firebasejs/4.6.2/firebase-database.js"></script> -->
+    <script src="https://www.gstatic.com/firebasejs/4.6.2/firebase-firestore.js"></script>
+    <!-- <script src="https://www.gstatic.com/firebasejs/4.6.2/firebase-messaging.js"></script> -->
 </head>
 
 <body>
+    <button id="btnGetData">Get Data</button>
+    <button id="btnSignOut">Sign Out</button>
 
 
-    <script src="https://www.gstatic.com/firebasejs/4.6.0/firebase.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/4.6.0/firebase-firestore.js"></script>
+
+
     <script>
+
         firebase.initializeApp({
             apiKey: 'AIzaSyDUjuQAYp4uerVNtfZprXq8fT9wJesr_KE',
             authDomain: '',
@@ -23,13 +29,67 @@
 
         // Initialize Cloud Firestore through Firebase
         var db = firebase.firestore();
-        
-        db.collection("cities").orderBy("name").limit(2).get().then(function(querySnapshot) {
-            querySnapshot.forEach(function(doc) {
-                console.log(doc.id, " => ", doc.data());
-            });
+
+        // db.collection("cities").orderBy("name").limit(2).get().then(function(querySnapshot) {
+        //     querySnapshot.forEach(function(doc) {
+        //         console.log(doc.id, " => ", doc.data());
+        //     });
+        // });
+
+        // firebase.auth().createUserWithEmailAndPassword('mbeckius@gmail.com', 'Booger').catch(function (error) {
+        //     // Handle Errors here.
+        //     var errorCode = error.code;
+        //     var errorMessage = error.message;
+        //     // ...
+        //     console.log(error.code,error.message);
+        // });
+
+        firebase.auth().onAuthStateChanged(function (user) {
+            if (user) {
+                // User is signed in.
+                var displayName = user.displayName;
+                var email = user.email;
+                var emailVerified = user.emailVerified;
+                var photoURL = user.photoURL;
+                var isAnonymous = user.isAnonymous;
+                var uid = user.uid;
+                var providerData = user.providerData;
+                console.log('user signed in', user.email);
+                // ...
+            } else {
+                console.log('user signed out.')
+            }
         });
 
+
+
+        firebase.auth().signInWithEmailAndPassword('mbeckius@gmail.com', 'Booger').catch((error) => {
+            // Handle Errors here.
+            var errorCode = error.code;
+            var errorMessage = error.message;
+            // ...
+        });
+
+
+
+        function signout() {
+            firebase.auth().signOut();
+        }
+
+        function getData() {
+            db.collection("cities").orderBy("name").limit(2).get()
+                .then(function (querySnapshot) {
+                    querySnapshot.forEach(function (doc) {
+                        console.log(doc.id, " => ", doc.data());
+                    }, (error) => console.log(error));
+                })
+                .catch((error)=>{
+                    console.log("here",error);
+                });
+        }
+
+        document.getElementById("btnSignOut").addEventListener('click', signout);
+        document.getElementById("btnGetData").addEventListener('click', getData);
 
     </script>
 </body>
